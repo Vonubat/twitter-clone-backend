@@ -13,8 +13,17 @@ export class UsersService {
     return this.userRepository.save(newUser);
   }
 
-  getAllUsers(): Promise<User[]> {
-    const users = this.userRepository.find();
+  async getAllUsers(): Promise<User[]> {
+    const users = await this.userRepository.find();
     return users;
+  }
+
+  async getUserByUsername(username: string): Promise<User> {
+    const users = await this.userRepository.find({
+      where: {
+        username,
+      },
+    });
+    return users[0];
   }
 }
