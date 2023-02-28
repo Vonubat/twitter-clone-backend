@@ -10,7 +10,7 @@ export class Tweet extends BaseEntity {
   @Column()
   text!: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   date!: Date;
 
   @ManyToOne(() => User, (user: User): Tweet[] | undefined => user.tweet)

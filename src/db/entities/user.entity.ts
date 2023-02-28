@@ -28,7 +28,7 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   bgImage!: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   joined!: Date;
 
   @OneToMany(() => Tweet, (tweet: Tweet): User => tweet.user)
