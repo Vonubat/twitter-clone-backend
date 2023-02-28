@@ -14,11 +14,7 @@ export class UsersService {
   }
 
   getAllUsers(): Promise<User[]> {
-    const users = this.userRepository.find({
-      relations: {
-        tweet: true,
-      },
-    });
+    const users = this.userRepository.find();
     return users;
   }
 }
