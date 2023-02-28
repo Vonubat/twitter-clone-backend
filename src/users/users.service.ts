@@ -1,18 +1,24 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm/dist';
+import { User } from 'src/db/entities/user.entity';
+import { Repository } from 'typeorm/repository/Repository';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
-  // constructor(@InjectModel(User) private userRepository: typeof User, private roleService: RolesService) {}
-  // async createUser(dto: CreateUserDto) {
-  //   const user = await this.userRepository.create(dto);
-  //   const role = await this.roleService.getRoleByValue('ADMIN');
-  //   await user.$set('roles', [role.id]);
-  //   user.roles = [role];
-  //   return user;
-  // }
-  // async getAllUsers() {
-  //   const users = await this.userRepository.findAll({ include: { all: true } });
-  //   return users;
-  // }
+  constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
+
+  createUser(dto: CreateUserDto): Promise<User> {
+    const newUser = this.userRepository.create(dto);
+    return this.userRepository.save(newUser);
+  }
+
+  getAllUsers(): Promise<User[]> {
+    const users = this.userRepository.find({
+      relations: {
+        tweet: true,
+      },
+    });
+    return users;
+  }
 }
