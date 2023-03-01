@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiProperty } from '@nestjs/swagger';
 import { Tweet } from 'src/db/entities/tweet.entity';
 import { CreateTweetDto } from './dto/create-tweet.dto';
 import { UpdateTweetDto } from './dto/update-tweet.dto';
-import { TweetParams } from './params/tweet.params';
+import { GetTweetParams } from './params/get-tweet.params';
+import { UpdateDeleteTweetParams } from './params/update-delete-tweet.params';
 import { TweetsService } from './tweets.service';
 
 @ApiTags('Tweets')
@@ -26,7 +27,7 @@ export class TweetsController {
   @Delete(':tweetId')
   delete(
     @Param()
-    params: TweetParams,
+    params: UpdateDeleteTweetParams,
   ): Promise<string> {
     return this.tweetsService.deleteTweetById(params.tweetId);
   }
@@ -39,9 +40,22 @@ export class TweetsController {
   @Put(':tweetId')
   update(
     @Param()
-    params: TweetParams,
+    params: UpdateDeleteTweetParams,
     @Body() dto: UpdateTweetDto,
   ): Promise<Tweet> {
     return this.tweetsService.updateTweetById(params.tweetId, dto);
+  }
+
+  @ApiOperation({ summary: 'Get list of User Tweets' })
+  @ApiResponse({ status: 200, type: [Tweet] })
+  @ApiProperty({
+    type: String,
+  })
+  @Get(':userId')
+  get(
+    @Param()
+    params: GetTweetParams,
+  ): Promise<Tweet[]> {
+    return this.tweetsService.getTweetListById(params.userId);
   }
 }
