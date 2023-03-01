@@ -1,0 +1,93 @@
+[
+  {
+    "id": "7tkA0FioH4fgTMLYdQA2y",
+    "avatar": null,
+    "bgImage": null,
+    "username": "skromez",
+    "firstName": "Dmitrii",
+    "lastName": "Novikov",
+    "location": "Warsaw, Poland",
+    "joined": "2023-01-01",
+    "tweets": [
+      {
+        "tweetId": "O2a0zczhTJJ0VDQRvXvM7",
+        "text": "Hello World! My name is Dmitrii. My first Tweet :)",
+        "likes": [
+          {
+            "userId": "7tkA0FioH4fgTMLYdQA2y"
+          },
+          {
+            "userId": "GABj2V7C9iN4PRTvOjkA_"
+          }
+        ],
+        "date": "2023-01-05"
+      }
+    ]
+  },
+  {
+    "id": "GABj2V7C9iN4PRTvOjkA_",
+    "avatar": null,
+    "bgImage": null,
+    "username": "vonubat",
+    "firstName": "Egor",
+    "lastName": "Tabunov",
+    "location": "Minsk, Belarus",
+    "joined": "2023-01-02",
+    "tweets": [
+      {
+        "tweetId": "Fn0Uft97RyZcOfxfGa7Aw",
+        "text": "Hello World! My name is Egor. My first Tweet :)",
+        "likes": [
+          {
+            "userId": "7tkA0FioH4fgTMLYdQA2y"
+          }
+        ],
+        "date": "2023-01-03"
+      }
+    ]
+  },
+  {
+    "id": "OJ5mL-TyPy-PNge1UMjdS",
+    "avatar": null,
+    "bgImage": null,
+    "username": "Kitty-Sam",
+    "firstName": "Kate",
+    "lastName": "Samuta",
+    "location": "Minsk, Belarus",
+    "joined": "2023-01-03",
+    "tweets": [
+      {
+        "tweetId": "mEDPera5gHi32n5k1RjEa",
+        "text": "Hello World! My name is Kate. My first Tweet :)",
+        "likes": [
+          {
+            "userId": "7tkA0FioH4fgTMLYdQA2y"
+          }
+        ],
+        "date": "2023-01-04"
+      }
+    ]
+  },
+  {
+    "id": "wFn6VeKpfXqc7fM8n85bq",
+    "avatar": null,
+    "bgImage": null,
+    "username": "Lin",
+    "firstName": "Lou",
+    "lastName": "",
+    "location": "Bern, Switzerland",
+    "joined": "2023-01-04",
+    "tweets": [
+      {
+        "tweetId": "UVHckJE18SsDOuPZi5W5D",
+        "text": "Hello World! My name is Lou. My first Tweet :)",
+        "likes": [
+          {
+            "userId": "7tkA0FioH4fgTMLYdQA2y"
+          }
+        ],
+        "date": "2023-01-04"
+      }
+    ]
+  }
+]

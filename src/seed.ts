@@ -4,8 +4,7 @@ import { runSeeders, SeederOptions } from 'typeorm-extension';
 import { Tweet } from './db/entities/tweet.entity';
 import { User } from './db/entities/user.entity';
 import { Like } from './db/entities/like.entity';
-import { TweetsFactory } from './db/factories/tweets.factory';
-import { UsersFactory } from './db/factories/users.factory';
+
 import { MainSeeder } from './db/seeding/main.seeder';
 import { ConfigModule } from '@nestjs/config';
 
@@ -20,7 +19,6 @@ const options: DataSourceOptions & SeederOptions = {
   password: DB_PASSWORD,
   database: DB_NAME,
   entities: [User, Tweet, Like],
-  factories: [UsersFactory, TweetsFactory],
   seeds: [MainSeeder],
 };
 

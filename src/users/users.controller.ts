@@ -23,7 +23,7 @@ export class UsersController {
     return this.usersService.getAllUsers();
   }
 
-  @ApiOperation({ summary: 'Get user by username' })
+  @ApiOperation({ summary: 'Get User by username' })
   @ApiResponse({ status: 200, type: User })
   @ApiProperty({
     type: String,
