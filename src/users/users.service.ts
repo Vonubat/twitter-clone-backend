@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm/dist';
 import { User } from 'src/db/entities/user.entity';
 import { Repository } from 'typeorm/repository/Repository';
@@ -9,21 +9,38 @@ export class UsersService {
   constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
 
   createUser(dto: CreateUserDto): Promise<User> {
-    const newUser = this.userRepository.create(dto);
+    const newUser: User = this.userRepository.create(dto);
+
     return this.userRepository.save(newUser);
   }
 
   async getAllUsers(): Promise<User[]> {
-    const users = await this.userRepository.find();
+    const users: User[] = await this.userRepository.find();
+
     return users;
   }
 
   async getUserByUsername(username: string): Promise<User> {
-    const users = await this.userRepository.find({
+    const foundedUser: User | null = await this.userRepository.findOne({
       where: {
         username,
       },
+      relations: {
+        tweet: true,
+        like: true,
+      },
     });
-    return users[0];
+
+    if (!foundedUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with such username not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return foundedUser;
   }
 }

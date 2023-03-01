@@ -13,14 +13,14 @@ export class TweetsController {
   constructor(private tweetsService: TweetsService) {}
 
   @ApiOperation({ summary: 'Create new Tweet' })
-  @ApiResponse({ status: 201, type: Tweet })
+  @ApiResponse({ status: 201, description: 'Return created Tweet', type: Tweet })
   @Post()
   create(@Body() dto: CreateTweetDto): Promise<Tweet> {
     return this.tweetsService.createTweet(dto);
   }
 
   @ApiOperation({ summary: 'Delete Tweet' })
-  @ApiResponse({ status: 200, type: String })
+  @ApiResponse({ status: 200, description: 'Return message', type: String })
   @ApiProperty({
     type: String,
   })
@@ -33,7 +33,7 @@ export class TweetsController {
   }
 
   @ApiOperation({ summary: 'Update Tweet' })
-  @ApiResponse({ status: 200, type: Tweet })
+  @ApiResponse({ status: 200, description: 'Return updated Tweet', type: Tweet })
   @ApiProperty({
     type: String,
   })
@@ -47,7 +47,7 @@ export class TweetsController {
   }
 
   @ApiOperation({ summary: 'Get list of User Tweets' })
-  @ApiResponse({ status: 200, type: [Tweet] })
+  @ApiResponse({ status: 200, description: 'Return array of User Tweets', type: [Tweet] })
   @ApiProperty({
     type: String,
   })
