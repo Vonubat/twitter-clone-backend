@@ -13,6 +13,15 @@ async function bootstrap() {
     .setTitle('twitter-clone-backend')
     .setDescription('Documentation REST API')
     .setVersion('1.0.0')
+    .addBearerAuth(
+      {
+        description: 'Enter your token here',
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'Authorization',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/docs', app, document);
