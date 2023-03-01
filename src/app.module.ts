@@ -5,13 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Tweet } from './db/entities/tweet.entity';
 import { User } from './db/entities/user.entity';
 import { Like } from './db/entities/like.entity';
-import { TweetsController } from './tweets/tweets.controller';
-import { TweetsService } from './tweets/tweets.service';
 import { TweetsModule } from './tweets/tweets.module';
 
 @Module({
-  controllers: [TweetsController],
-  providers: [TweetsService],
+  controllers: [],
+  providers: [],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
