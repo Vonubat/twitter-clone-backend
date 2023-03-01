@@ -57,4 +57,25 @@ export class LikesService {
       where: { tweet: { tweetId: dto.tweetId } },
     });
   }
+
+  async getLikesAndUserIdsOnCertainLike(tweetId: string): Promise<Like[]> {
+    const foundedTweet: Tweet | null = await this.tweetRepository.findOne({ where: { tweetId } });
+
+    if (!foundedTweet) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Tweet with such id not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const foundedLikes: Like[] = await this.likeRepository.find({
+      where: { tweet: { tweetId } },
+      relations: { user: true },
+    });
+
+    return foundedLikes;
+  }
 }

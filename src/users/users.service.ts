@@ -27,7 +27,9 @@ export class UsersService {
       },
       relations: {
         tweet: true,
-        like: true,
+        like: {
+          tweet: true,
+        },
       },
     });
 
