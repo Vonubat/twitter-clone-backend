@@ -30,4 +30,21 @@ export class TweetsService {
 
     return this.tweetRepository.save(newTweet);
   }
+
+  async deleteTweet(tweetId: string): Promise<string> {
+    const foundedTweet: Tweet | null = await this.tweetRepository.findOne({ where: { tweetId } });
+
+    if (foundedTweet) {
+      await this.tweetRepository.delete({ tweetId });
+      return `Tweet ${tweetId} was deleted successfully`;
+    } else {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Tweet with such id not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+  }
 }
