@@ -7,5 +7,7 @@ services:
       POSTGRES_DB: 'twitter-clone'
       POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'postgres'
+      TZ: 'GMT+3'
+      PGTZ: 'GMT+3'
     ports:
       - '5432:5432'
