@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiOperation, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiExcludeEndpoint, ApiOperation, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/db/entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -9,6 +9,7 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  @ApiExcludeEndpoint()
   @ApiOperation({ summary: 'Create new User' })
   @ApiResponse({ status: 201, description: 'Return created User', type: User })
   @Post()

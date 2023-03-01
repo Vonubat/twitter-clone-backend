@@ -19,12 +19,14 @@ export class AuthService {
 
   async login(dto: LoginUserDto): Token {
     const user = await this.validateUser(dto);
+
     return this.generateToken(user);
   }
 
   async signup(dto: CreateUserDto): Token {
     const hashPassword = await bcrypt.hash(dto.password, 5);
     const user = await this.userService.createUser({ ...dto, password: hashPassword });
+
     return this.generateToken(user);
   }
 
