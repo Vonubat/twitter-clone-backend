@@ -6,6 +6,7 @@ import { Tweet } from './db/entities/tweet.entity';
 import { User } from './db/entities/user.entity';
 import { Like } from './db/entities/like.entity';
 import { TweetsModule } from './tweets/tweets.module';
+import { LikesModule } from './likes/likes.module';
 
 @Module({
   controllers: [],
@@ -30,6 +31,7 @@ import { TweetsModule } from './tweets/tweets.module';
     }),
     UsersModule,
     TweetsModule,
+    LikesModule,
   ],
 })
 export class AppModule {}
