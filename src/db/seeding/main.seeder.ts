@@ -3,6 +3,7 @@ import { Seeder } from 'typeorm-extension';
 import { Tweet } from '../entities/tweet.entity';
 import { User } from '../entities/user.entity';
 import * as json from '../db.json';
+import * as bcrypt from 'bcrypt';
 
 export class MainSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<void> {
@@ -13,7 +14,7 @@ export class MainSeeder implements Seeder {
       await usersRepository.insert([
         {
           username: jsonUser.username,
-          password: jsonUser.username,
+          password: await bcrypt.hash(jsonUser.username, 5),
           firstName: jsonUser.firstName,
           lastName: jsonUser.lastName,
           location: jsonUser.location,

@@ -7,14 +7,13 @@ import { User } from './db/entities/user.entity';
 import { Like } from './db/entities/like.entity';
 import { TweetsModule } from './tweets/tweets.module';
 import { LikesModule } from './likes/likes.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   controllers: [],
   providers: [],
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
+    ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -32,6 +31,7 @@ import { LikesModule } from './likes/likes.module';
     UsersModule,
     TweetsModule,
     LikesModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
