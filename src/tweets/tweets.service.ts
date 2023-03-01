@@ -4,6 +4,7 @@ import { Tweet } from 'src/db/entities/tweet.entity';
 import { User } from 'src/db/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateTweetDto } from './dto/create-tweet.dto';
+import { UpdateTweetDto } from './dto/update-tweet.dto';
 
 @Injectable()
 export class TweetsService {
@@ -31,7 +32,7 @@ export class TweetsService {
     return this.tweetRepository.save(newTweet);
   }
 
-  async deleteTweet(tweetId: string): Promise<string> {
+  async deleteTweetById(tweetId: string): Promise<string> {
     const foundedTweet: Tweet | null = await this.tweetRepository.findOne({ where: { tweetId } });
 
     if (foundedTweet) {
@@ -46,5 +47,26 @@ export class TweetsService {
         HttpStatus.NOT_FOUND,
       );
     }
+  }
+
+  async updateTweetById(tweetId: string, dto: UpdateTweetDto): Promise<Tweet> {
+    const foundedTweet: Tweet | null = await this.tweetRepository.findOne({
+      where: { tweetId },
+      relations: { user: true },
+    });
+
+    if (foundedTweet) {
+      foundedTweet.text = dto.text;
+    } else {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Tweet with such id not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return this.tweetRepository.save(foundedTweet);
   }
 }
