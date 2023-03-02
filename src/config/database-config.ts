@@ -1,13 +1,14 @@
-import { join } from 'path';
 import { DataSourceOptions } from 'typeorm';
 import { Tweet } from '../db/entities/tweet.entity';
 import { User } from '../db/entities/user.entity';
 import { Like } from '../db/entities/like.entity';
 import { Migartion1677766976253 } from '../migrations/1677766976253-Migartion';
+import { ConfigModule } from '@nestjs/config';
 
+ConfigModule.forRoot();
 const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
-console.log(join(__dirname, '../migrations/*.ts'));
+console.log(DB_HOST);
 
 export const databaseConfig: DataSourceOptions = {
   type: 'postgres',
