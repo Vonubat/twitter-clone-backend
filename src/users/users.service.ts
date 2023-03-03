@@ -42,8 +42,8 @@ export class UsersService {
         username,
       },
       relations: {
-        tweet: true,
-        like: {
+        tweets: true,
+        likes: {
           tweet: true,
         },
       },

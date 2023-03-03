@@ -8,8 +8,6 @@ import { ConfigModule } from '@nestjs/config';
 ConfigModule.forRoot();
 const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
-console.log(DB_HOST);
-
 export const databaseConfig: DataSourceOptions = {
   type: 'postgres',
   host: DB_HOST,

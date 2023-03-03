@@ -21,9 +21,9 @@ export class Tweet extends BaseEntity {
   @CreateDateColumn({ type: 'timestamptz' })
   date!: Date;
 
-  @ManyToOne(() => User, (user: User): Tweet[] | undefined => user.tweet)
+  @ManyToOne(() => User, (user: User): Tweet[] | undefined => user.tweets)
   user!: User;
 
   @OneToMany(() => Like, (like: Like): Tweet => like.tweet)
-  like?: Like[];
+  likes?: Like[];
 }

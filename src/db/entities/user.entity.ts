@@ -53,8 +53,8 @@ export class User extends BaseEntity {
   joined!: Date;
 
   @OneToMany(() => Tweet, (tweet: Tweet): User => tweet.user)
-  tweet?: Tweet[];
+  tweets?: Tweet[];
 
   @OneToMany(() => Like, (like: Like): User => like.user)
-  like?: Like[];
+  likes?: Like[];
 }

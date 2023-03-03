@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nes
 import { ApiTags, ApiOperation, ApiResponse, ApiProperty, ApiSecurity } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Tweet } from 'src/db/entities/tweet.entity';
+import { DeleteTweetResponse } from '../types';
 import { CreateTweetDto } from './dto/create-tweet.dto';
 import { UpdateTweetDto } from './dto/update-tweet.dto';
 import { GetTweetParams } from './params/get-tweet.params';
@@ -25,7 +26,15 @@ export class TweetsController {
   @ApiSecurity('Authorization')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Delete Tweet' })
-  @ApiResponse({ status: 200, description: 'Return message', type: String })
+  @ApiResponse({
+    status: 200,
+    description: 'Return message',
+    schema: {
+      example: {
+        message: 'string',
+      },
+    },
+  })
   @ApiProperty({
     type: String,
   })
@@ -33,7 +42,7 @@ export class TweetsController {
   delete(
     @Param()
     params: UpdateDeleteTweetParams,
-  ): Promise<string> {
+  ): DeleteTweetResponse {
     return this.tweetsService.deleteTweetById(params.tweetId);
   }
 
