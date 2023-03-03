@@ -35,6 +35,6 @@ export class LikesController {
     @Param()
     params: GetLikeParams,
   ): Promise<Like[]> {
-    return this.likesService.getLikesAndUserIdsOnCertainLike(params.tweetId);
+    return this.likesService.getLikesAndUsersOnCertainTweet(params.tweetId);
   }
 }
