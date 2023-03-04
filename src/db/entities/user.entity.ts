@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity, CreateDateColumn } from 'typeorm';
 import { Like } from './like.entity';
 import { Tweet } from './tweet.entity';
@@ -13,7 +14,8 @@ export class User extends BaseEntity {
   @Column({ unique: true })
   username!: string;
 
-  @Column({ select: false })
+  @Column()
+  @Exclude()
   password!: string;
 
   @ApiProperty({ example: 'Dmitrii', description: 'User firstName' })

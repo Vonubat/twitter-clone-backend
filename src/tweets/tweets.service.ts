@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Tweet } from 'src/db/entities/tweet.entity';
 import { User } from 'src/db/entities/user.entity';
 import { Repository } from 'typeorm';
-import { DeleteTweetResponse } from '../types';
+import { SimpleMessageResponse } from '../types';
 import { CreateTweetDto } from './dto/create-tweet.dto';
 import { UpdateTweetDto } from './dto/update-tweet.dto';
 
@@ -33,7 +33,7 @@ export class TweetsService {
     return this.tweetRepository.save(newTweet);
   }
 
-  async deleteTweetById(tweetId: string): DeleteTweetResponse {
+  async deleteTweetById(tweetId: string): SimpleMessageResponse {
     const foundedTweet: Tweet | null = await this.tweetRepository.findOne({ where: { tweetId } });
 
     if (!foundedTweet) {

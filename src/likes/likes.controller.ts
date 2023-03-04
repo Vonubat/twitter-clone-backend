@@ -1,7 +1,8 @@
 import { Body, Controller, Post, Get, Param, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiProperty, ApiSecurity } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+
 import { Like } from 'src/db/entities/like.entity';
+import JwtAuthenticationGuard from '../auth/guards/jwt-auth.guard';
 import { AddRemoveLikeDto } from './dto/add-remove-like.dto';
 import { LikesService } from './likes.service';
 import { GetLikeParams } from './params/get-like.params';
@@ -12,8 +13,8 @@ export class LikesController {
   tweetsService: any;
   constructor(private likesService: LikesService) {}
 
-  @ApiSecurity('Authorization')
-  @UseGuards(JwtAuthGuard)
+  @ApiSecurity('Authentication')
+  @UseGuards(JwtAuthenticationGuard)
   @ApiOperation({ summary: 'Add/Remove Like to/from Tweet' })
   @ApiResponse({
     status: 201,

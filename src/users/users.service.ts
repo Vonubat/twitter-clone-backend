@@ -61,4 +61,20 @@ export class UsersService {
 
     return foundedUser;
   }
+
+  async getById(userId: string): Promise<User> {
+    const foundedUser: User | null = await this.userRepository.findOne({ where: { userId } });
+
+    if (!foundedUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return foundedUser;
+  }
 }

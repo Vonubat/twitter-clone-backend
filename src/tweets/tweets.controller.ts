@@ -1,8 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiProperty, ApiSecurity } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+
 import { Tweet } from 'src/db/entities/tweet.entity';
-import { DeleteTweetResponse } from '../types';
+import JwtAuthenticationGuard from '../auth/guards/jwt-auth.guard';
+import { SimpleMessageResponse } from '../types';
 import { CreateTweetDto } from './dto/create-tweet.dto';
 import { UpdateTweetDto } from './dto/update-tweet.dto';
 import { GetTweetParams } from './params/get-tweet.params';
@@ -14,8 +15,8 @@ import { TweetsService } from './tweets.service';
 export class TweetsController {
   constructor(private tweetsService: TweetsService) {}
 
-  @ApiSecurity('Authorization')
-  @UseGuards(JwtAuthGuard)
+  @ApiSecurity('Authentication')
+  @UseGuards(JwtAuthenticationGuard)
   @ApiOperation({ summary: 'Create new Tweet' })
   @ApiResponse({ status: 201, description: 'Return created Tweet', type: Tweet })
   @Post()
@@ -23,8 +24,8 @@ export class TweetsController {
     return this.tweetsService.createTweet(dto);
   }
 
-  @ApiSecurity('Authorization')
-  @UseGuards(JwtAuthGuard)
+  @ApiSecurity('Authentication')
+  @UseGuards(JwtAuthenticationGuard)
   @ApiOperation({ summary: 'Delete Tweet' })
   @ApiResponse({
     status: 200,
@@ -42,12 +43,12 @@ export class TweetsController {
   delete(
     @Param()
     params: UpdateDeleteTweetParams,
-  ): DeleteTweetResponse {
+  ): SimpleMessageResponse {
     return this.tweetsService.deleteTweetById(params.tweetId);
   }
 
-  @ApiSecurity('Authorization')
-  @UseGuards(JwtAuthGuard)
+  @ApiSecurity('Authentication')
+  @UseGuards(JwtAuthenticationGuard)
   @ApiOperation({ summary: 'Update Tweet' })
   @ApiResponse({ status: 200, description: 'Return updated Tweet', type: Tweet })
   @ApiProperty({

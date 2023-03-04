@@ -1,59 +1,59 @@
-import * as bcrypt from 'bcrypt';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/db/entities/user.entity';
-import { Repository } from 'typeorm';
-import { LoginUserDto } from 'src/users/dto/login-user.dto';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { Token } from 'src/types';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { TokenPayload } from '../types';
+import { User } from '../db/entities/user.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
-    private jwtService: JwtService,
-    private userService: UsersService,
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
-  async login(dto: LoginUserDto): Token {
-    const user = await this.validateUser(dto);
+  public async register(registrationData: CreateUserDto): Promise<User> {
+    const hashedPassword = await bcrypt.hash(registrationData.password, 10);
 
-    return this.generateToken(user);
-  }
-
-  async signup(dto: CreateUserDto): Token {
-    const hashPassword = await bcrypt.hash(dto.password, 5);
-    const user = await this.userService.createUser({ ...dto, password: hashPassword });
-
-    return this.generateToken(user);
-  }
-
-  private async generateToken(user: User): Token {
-    const payload = { username: user.username, id: user.userId };
-
-    return {
-      token: this.jwtService.sign(payload),
-    };
-  }
-
-  private async validateUser(dto: LoginUserDto): Promise<User> {
-    const user: User | null = await this.userRepository.findOne({
-      where: { username: dto.username },
-      select: { password: true, username: true, userId: true },
+    const createdUser = await this.usersService.createUser({
+      ...registrationData,
+      password: hashedPassword,
     });
 
-    if (!user) {
-      throw new UnauthorizedException({ message: 'Cant find User with such username or password' });
+    return createdUser;
+  }
+
+  public getCookieWithJwtToken(userId: string): string {
+    const payload: TokenPayload = { userId };
+    const token = this.jwtService.sign(payload);
+
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_EXPIRATION_TIME')}`;
+  }
+
+  public getCookieForLogOut() {
+    return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
+  }
+
+  public async getAuthenticatedUser(username: string, plainTextPassword: string): Promise<User> {
+    try {
+      const user = await this.usersService.getUserByUsername(username);
+
+      await this.verifyPassword(plainTextPassword, user.password);
+
+      return user;
+    } catch (error) {
+      throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
     }
+  }
 
-    const isPasswordEquals: boolean = await bcrypt.compare(dto.password, user.password);
+  private async verifyPassword(plainTextPassword: string, hashedPassword: string): Promise<void> {
+    const isPasswordMatching = await bcrypt.compare(plainTextPassword, hashedPassword);
 
-    if (!isPasswordEquals) {
-      throw new UnauthorizedException({ message: 'Cant find User with such username or password' });
+    if (!isPasswordMatching) {
+      throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
     }
-
-    return user;
   }
 }
