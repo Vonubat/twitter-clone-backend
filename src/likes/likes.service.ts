@@ -14,19 +14,7 @@ export class LikesService {
     @InjectRepository(Like) private likeRepository: Repository<Like>,
   ) {}
 
-  async addRemoveLike(dto: AddRemoveLikeDto): Promise<Like[]> {
-    const foundedUser: User | null = await this.userRepository.findOne({ where: { userId: dto.userId } });
-
-    if (!foundedUser) {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'User with such id not found',
-        },
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
+  async addRemoveLike(dto: AddRemoveLikeDto, user: User): Promise<Like[]> {
     const foundedTweet: Tweet | null = await this.tweetRepository.findOne({ where: { tweetId: dto.tweetId } });
 
     if (!foundedTweet) {
@@ -40,7 +28,7 @@ export class LikesService {
     }
 
     const foundedLike: Like | null = await this.likeRepository.findOne({
-      where: { user: { userId: dto.userId }, tweet: { tweetId: dto.tweetId } },
+      where: { user: { userId: user.userId }, tweet: { tweetId: dto.tweetId } },
     });
 
     if (foundedLike) {
@@ -48,7 +36,7 @@ export class LikesService {
       await this.likeRepository.delete({ likeId });
     } else {
       const newLike: Like = this.likeRepository.create();
-      newLike.user = foundedUser;
+      newLike.user = user;
       newLike.tweet = foundedTweet;
       await this.likeRepository.save(newLike);
     }

@@ -1,8 +1,9 @@
-import { Body, Controller, Post, Get, Param, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Get, Param, UseGuards, Req } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiProperty, ApiSecurity } from '@nestjs/swagger';
 
 import { Like } from 'src/db/entities/like.entity';
 import JwtAuthenticationGuard from '../auth/guards/jwt-auth.guard';
+import { RequestWithUser } from '../types';
 import { AddRemoveLikeDto } from './dto/add-remove-like.dto';
 import { LikesService } from './likes.service';
 import { GetLikeParams } from './params/get-like.params';
@@ -22,8 +23,10 @@ export class LikesController {
     type: [Like],
   })
   @Post()
-  create(@Body() dto: AddRemoveLikeDto): Promise<Like[]> {
-    return this.likesService.addRemoveLike(dto);
+  create(@Body() dto: AddRemoveLikeDto, @Req() request: RequestWithUser): Promise<Like[]> {
+    const { user } = request;
+
+    return this.likesService.addRemoveLike(dto, user);
   }
 
   @ApiOperation({ summary: 'Get amount of Likes on certain tweet and User ids of who liked' })
