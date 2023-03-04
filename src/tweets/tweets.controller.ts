@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiProperty, ApiSecurity } from '@nestjs/swagger';
 
 import { Tweet } from 'src/db/entities/tweet.entity';
 import JwtAuthenticationGuard from '../auth/guards/jwt-auth.guard';
-import { SimpleMessageResponse } from '../types';
+import { RequestWithUser, SimpleMessageResponse } from '../types';
 import { CreateTweetDto } from './dto/create-tweet.dto';
 import { UpdateTweetDto } from './dto/update-tweet.dto';
 import { GetTweetParams } from './params/get-tweet.params';
@@ -20,8 +20,9 @@ export class TweetsController {
   @ApiOperation({ summary: 'Create new Tweet' })
   @ApiResponse({ status: 201, description: 'Return created Tweet', type: Tweet })
   @Post()
-  create(@Body() dto: CreateTweetDto): Promise<Tweet> {
-    return this.tweetsService.createTweet(dto);
+  create(@Body() dto: CreateTweetDto, @Req() request: RequestWithUser): Promise<Tweet> {
+    const { user } = request;
+    return this.tweetsService.createTweet(dto, user);
   }
 
   @ApiSecurity('Authentication')
@@ -43,8 +44,10 @@ export class TweetsController {
   delete(
     @Param()
     params: UpdateDeleteTweetParams,
+    @Req() request: RequestWithUser,
   ): SimpleMessageResponse {
-    return this.tweetsService.deleteTweetById(params.tweetId);
+    const { user } = request;
+    return this.tweetsService.deleteTweetById(params.tweetId, user);
   }
 
   @ApiSecurity('Authentication')
@@ -59,8 +62,10 @@ export class TweetsController {
     @Param()
     params: UpdateDeleteTweetParams,
     @Body() dto: UpdateTweetDto,
+    @Req() request: RequestWithUser,
   ): Promise<Tweet> {
-    return this.tweetsService.updateTweetById(params.tweetId, dto);
+    const { user } = request;
+    return this.tweetsService.updateTweetById(params.tweetId, dto, user);
   }
 
   @ApiOperation({ summary: 'Get list of User Tweets' })
