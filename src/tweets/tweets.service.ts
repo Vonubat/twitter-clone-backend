@@ -21,6 +21,15 @@ export class TweetsService {
     return this.tweetRepository.save(newTweet);
   }
 
+  async createInitialTweet(user: User): Promise<Tweet> {
+    const newTweet: Tweet = this.tweetRepository.create({
+      text: `Hello World! My name is ${user.firstName}. My first Tweet :)`,
+    });
+    newTweet.user = user;
+
+    return this.tweetRepository.save(newTweet);
+  }
+
   async deleteTweetById(tweetId: string, user: User): SimpleMessageResponse {
     const foundedTweet: Tweet | null = await this.tweetRepository.findOne({
       where: { tweetId },
