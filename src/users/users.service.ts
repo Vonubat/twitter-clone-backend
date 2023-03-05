@@ -49,12 +49,6 @@ export class UsersService {
       where: {
         username,
       },
-      relations: {
-        tweets: true,
-        likes: {
-          tweet: true,
-        },
-      },
     });
 
     if (!foundedUser) {
