@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Tweet } from 'src/db/entities/tweet.entity';
 import { User } from 'src/db/entities/user.entity';
 import { Repository } from 'typeorm';
+import { Like } from '../db/entities/like.entity';
 import { SimpleMessageResponse } from '../types';
 import { CreateTweetDto } from './dto/create-tweet.dto';
 import { UpdateTweetDto } from './dto/update-tweet.dto';
@@ -12,6 +13,7 @@ export class TweetsService {
   constructor(
     @InjectRepository(Tweet) private tweetRepository: Repository<Tweet>,
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Like) private likeRepository: Repository<Like>,
   ) {}
 
   async createTweet(dto: CreateTweetDto, user: User): Promise<Tweet> {
@@ -33,7 +35,7 @@ export class TweetsService {
   async deleteTweetById(tweetId: string, user: User): SimpleMessageResponse {
     const foundedTweet: Tweet | null = await this.tweetRepository.findOne({
       where: { tweetId },
-      relations: { user: true },
+      relations: { user: true, likes: true },
     });
 
     if (!foundedTweet) {
@@ -54,6 +56,10 @@ export class TweetsService {
         },
         HttpStatus.BAD_REQUEST,
       );
+    }
+
+    if (foundedTweet.likes) {
+      await this.likeRepository.delete(foundedTweet.likes.map(({ likeId }) => likeId));
     }
 
     await this.tweetRepository.delete({ tweetId });

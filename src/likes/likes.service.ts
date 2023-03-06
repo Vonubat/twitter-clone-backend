@@ -10,7 +10,6 @@ import { AddRemoveLikeDto } from './dto/add-remove-like.dto';
 export class LikesService {
   constructor(
     @InjectRepository(Tweet) private tweetRepository: Repository<Tweet>,
-    @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Like) private likeRepository: Repository<Like>,
   ) {}
 
