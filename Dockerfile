@@ -21,4 +21,4 @@ COPY --chown=node:node --from=build /app/dist ./dist
 
 USER node
 
-CMD [ "node", "env NODE_ENV=production dist/main.js" ]
+CMD [ "NODE_ENV=production node", "dist/main.js" ]
