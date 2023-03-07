@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Tweet } from './db/entities/tweet.entity';
 import { User } from './db/entities/user.entity';
 import { Like } from './db/entities/like.entity';
+import { TweetsModule } from './tweets/tweets.module';
 
 @Module({
   controllers: [],
@@ -28,6 +29,7 @@ import { Like } from './db/entities/like.entity';
       inject: [ConfigService],
     }),
     UsersModule,
+    TweetsModule,
   ],
 })
 export class AppModule {}
