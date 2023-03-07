@@ -24,21 +24,24 @@ const {
   PGDATABASE,
 } = process.env;
 
-console.log(NODE_ENV);
-
-const DATABASE_URL =
+const host = NODE_ENV === dev ? DB_HOST : PGHOST;
+const port = Number(NODE_ENV === dev ? DB_PORT : PGPORT);
+const username = NODE_ENV === dev ? DB_USER : PGUSER;
+const password = NODE_ENV === dev ? DB_PASSWORD : PGPASSWORD;
+const database = NODE_ENV === dev ? DB_NAME : PGDATABASE;
+const url =
   NODE_ENV === prod
     ? `postgresql://${{ PGUSER }}:${{ PGPASSWORD }}@${{ PGHOST }}:${{ PGPORT }}/${{ PGDATABASE }}`
     : undefined;
 
 export const databaseConfig: DataSourceOptions = {
   type: 'postgres',
-  host: NODE_ENV === dev ? DB_HOST : PGHOST,
-  port: Number(NODE_ENV === dev ? DB_PORT : PGPORT),
-  username: NODE_ENV === dev ? DB_USER : PGUSER,
-  password: NODE_ENV === dev ? DB_PASSWORD : PGPASSWORD,
-  database: NODE_ENV === dev ? DB_NAME : PGDATABASE,
-  url: DATABASE_URL,
+  host,
+  port,
+  username,
+  password,
+  database,
+  url,
   entities: [User, Tweet, Like],
   migrations: [Migartion1677766976253],
   synchronize: false,

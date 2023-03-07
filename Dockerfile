@@ -2,6 +2,8 @@ FROM node:lts-alpine As build
 
 WORKDIR /app
 
+ENV NODE_ENV production
+
 COPY --chown=node:node package.json package-lock.json ./
 
 RUN npm ci
@@ -18,8 +20,6 @@ WORKDIR /app
 COPY --chown=node:node --from=build /app/package.json /app/package-lock.json ./
 COPY --chown=node:node --from=build /app/node_modules ./node_modules
 COPY --chown=node:node --from=build /app/dist ./dist
-
-ENV NODE_ENV production
 
 USER node
 
