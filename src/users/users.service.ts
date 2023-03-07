@@ -2,11 +2,17 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm/dist';
 import { User } from 'src/db/entities/user.entity';
 import { Repository } from 'typeorm/repository/Repository';
+import { TweetsService } from '../tweets/tweets.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateAvatarDto } from './dto/update-avatar.dto';
+import { UpdateBgImageDto } from './dto/update-bgImage.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>,
+    private readonly tweetsService: TweetsService,
+  ) {}
 
   async createUser(dto: CreateUserDto): Promise<User> {
     const foundedUser: User | null = await this.userRepository.findOne({
@@ -26,8 +32,10 @@ export class UsersService {
     }
 
     const newUser: User = this.userRepository.create(dto);
+    await this.userRepository.save(newUser);
+    await this.tweetsService.createInitialTweet(newUser);
 
-    return this.userRepository.save(newUser);
+    return newUser;
   }
 
   async getAllUsers(): Promise<User[]> {
@@ -40,12 +48,6 @@ export class UsersService {
     const foundedUser: User | null = await this.userRepository.findOne({
       where: {
         username,
-      },
-      relations: {
-        tweets: true,
-        likes: {
-          tweet: true,
-        },
       },
     });
 
@@ -84,5 +86,49 @@ export class UsersService {
     }
 
     return foundedUser;
+  }
+
+  async updateUserAvatar(dto: UpdateAvatarDto, user: User): Promise<User> {
+    const foundedUser: User | null = await this.userRepository.findOne({
+      where: {
+        userId: user.userId,
+      },
+    });
+
+    if (!foundedUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    foundedUser.avatar = dto.avatar;
+
+    return this.userRepository.save(foundedUser);
+  }
+
+  async updateUserBgImage(dto: UpdateBgImageDto, user: User): Promise<User> {
+    const foundedUser: User | null = await this.userRepository.findOne({
+      where: {
+        userId: user.userId,
+      },
+    });
+
+    if (!foundedUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    foundedUser.bgImage = dto.bgImage;
+
+    return this.userRepository.save(foundedUser);
   }
 }

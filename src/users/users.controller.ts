@@ -1,7 +1,12 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiExcludeEndpoint, ApiOperation, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Put, Req, UseGuards } from '@nestjs/common/decorators';
+import { ApiExcludeEndpoint, ApiOperation, ApiProperty, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/db/entities/user.entity';
+import JwtAuthenticationGuard from '../auth/guards/jwt-auth.guard';
+import { RequestWithUser } from '../types';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateAvatarDto } from './dto/update-avatar.dto';
+import { UpdateBgImageDto } from './dto/update-bgImage.dto';
 import { UsersService } from './users.service';
 
 @ApiTags('Users')
@@ -32,5 +37,25 @@ export class UsersController {
   @Get(':username')
   getByUsername(@Param('username') username: string): Promise<User> {
     return this.usersService.getUserByUsername(username);
+  }
+
+  @ApiSecurity('Authentication')
+  @UseGuards(JwtAuthenticationGuard)
+  @ApiOperation({ summary: 'Update User`s avatar' })
+  @ApiResponse({ status: 200, description: 'Return updated User', type: User })
+  @Put('/avatar')
+  updateAvatar(@Body() dto: UpdateAvatarDto, @Req() request: RequestWithUser): Promise<User> {
+    const { user } = request;
+    return this.usersService.updateUserAvatar(dto, user);
+  }
+
+  @ApiSecurity('Authentication')
+  @UseGuards(JwtAuthenticationGuard)
+  @ApiOperation({ summary: 'Update User`s bgImage' })
+  @ApiResponse({ status: 200, description: 'Return updated User', type: User })
+  @Put('/bgImage')
+  updateBgImage(@Body() dto: UpdateBgImageDto, @Req() request: RequestWithUser): Promise<User> {
+    const { user } = request;
+    return this.usersService.updateUserBgImage(dto, user);
   }
 }
