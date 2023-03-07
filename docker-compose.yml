@@ -6,14 +6,15 @@ services:
       dockerfile: Dockerfile
       context: .
       # Only will build development stage from our dockerfile
-      target: development
+      # target: development
     env_file:
       - .env
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     # Run a command against the development stage of the image
-    command: npm run start:dev
+    # command: npm run start:dev
+    command: npm run start:prod
     ports:
       - 3000:3000
     depends_on:
