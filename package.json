@@ -1,7 +1,7 @@
 {
   "name": "twitter-clone-backend",
-  "version": "0.0.1",
-  "description": "Twitter Clone backend written in Nest.js + PostgreSQL",
+  "version": "1.0.0",
+  "description": "Twitter Clone backend written in Nest.js + TypeORM+ PostgreSQL",
   "author": "Vonubat <vonubat@gmail.com>",
   "private": true,
   "license": "UNLICENSED",
