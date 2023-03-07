@@ -17,37 +17,37 @@ export class TweetsService {
     const newTweet: Tweet = this.tweetRepository.create(dto);
     const foundedUser: User | null = await this.userRepository.findOne({ where: { userId: dto.userId } });
 
-    if (foundedUser) {
-      newTweet.user = foundedUser;
-
-      return this.tweetRepository.save(newTweet);
+    if (!foundedUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with such id not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    throw new HttpException(
-      {
-        status: HttpStatus.NOT_FOUND,
-        error: 'User with such id not found',
-      },
-      HttpStatus.NOT_FOUND,
-    );
+    newTweet.user = foundedUser;
+
+    return this.tweetRepository.save(newTweet);
   }
 
   async deleteTweetById(tweetId: string): Promise<string> {
     const foundedTweet: Tweet | null = await this.tweetRepository.findOne({ where: { tweetId } });
 
-    if (foundedTweet) {
-      await this.tweetRepository.delete({ tweetId });
-
-      return `Tweet ${tweetId} was deleted successfully`;
+    if (!foundedTweet) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Tweet with such id not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    throw new HttpException(
-      {
-        status: HttpStatus.NOT_FOUND,
-        error: 'Tweet with such id not found',
-      },
-      HttpStatus.NOT_FOUND,
-    );
+    await this.tweetRepository.delete({ tweetId });
+
+    return `Tweet ${tweetId} was deleted successfully`;
   }
 
   async updateTweetById(tweetId: string, dto: UpdateTweetDto): Promise<Tweet> {
@@ -56,42 +56,42 @@ export class TweetsService {
       relations: { user: true },
     });
 
-    if (foundedTweet) {
-      foundedTweet.text = dto.text;
-
-      return this.tweetRepository.save(foundedTweet);
+    if (!foundedTweet) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Tweet with such id not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    throw new HttpException(
-      {
-        status: HttpStatus.NOT_FOUND,
-        error: 'Tweet with such id not found',
-      },
-      HttpStatus.NOT_FOUND,
-    );
+    foundedTweet.text = dto.text;
+
+    return this.tweetRepository.save(foundedTweet);
   }
 
   async getTweetListById(userId: string): Promise<Tweet[]> {
     const foundedUser: User | null = await this.userRepository.findOne({ where: { userId } });
 
-    if (foundedUser) {
-      const foundedTweets: Tweet[] = await this.tweetRepository.find({
-        where: {
-          user: {
-            userId,
-          },
+    if (!foundedUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with such id not found',
         },
-      });
-
-      return foundedTweets;
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    throw new HttpException(
-      {
-        status: HttpStatus.NOT_FOUND,
-        error: 'User with such id not found',
+    const foundedTweets: Tweet[] = await this.tweetRepository.find({
+      where: {
+        user: {
+          userId,
+        },
       },
-      HttpStatus.NOT_FOUND,
-    );
+    });
+
+    return foundedTweets;
   }
 }
