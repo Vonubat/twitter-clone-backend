@@ -58,7 +58,7 @@ export class LikesService {
     });
   }
 
-  async getLikesAndUserIdsOnCertainLike(tweetId: string): Promise<Like[]> {
+  async getLikesAndUsersOnCertainTweet(tweetId: string): Promise<Like[]> {
     const foundedTweet: Tweet | null = await this.tweetRepository.findOne({ where: { tweetId } });
 
     if (!foundedTweet) {

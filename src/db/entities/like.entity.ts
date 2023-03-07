@@ -9,9 +9,9 @@ export class Like extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   likeId!: string;
 
-  @ManyToOne(() => Tweet, (tweet: Tweet): Like[] | undefined => tweet.like)
+  @ManyToOne(() => Tweet, (tweet: Tweet): Like[] | undefined => tweet.likes)
   tweet!: Tweet;
 
-  @ManyToOne(() => User, (user: User): Like[] | undefined => user.like)
+  @ManyToOne(() => User, (user: User): Like[] | undefined => user.likes)
   user!: User;
 }

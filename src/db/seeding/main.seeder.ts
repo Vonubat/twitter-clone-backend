@@ -2,7 +2,7 @@ import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
 import { Tweet } from '../entities/tweet.entity';
 import { User } from '../entities/user.entity';
-import * as json from '../db.json';
+import * as json from './db.json';
 import * as bcrypt from 'bcrypt';
 
 export class MainSeeder implements Seeder {

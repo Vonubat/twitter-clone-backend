@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Tweet } from 'src/db/entities/tweet.entity';
 import { User } from 'src/db/entities/user.entity';
 import { Repository } from 'typeorm';
+import { DeleteTweetResponse } from '../types';
 import { CreateTweetDto } from './dto/create-tweet.dto';
 import { UpdateTweetDto } from './dto/update-tweet.dto';
 
@@ -32,7 +33,7 @@ export class TweetsService {
     return this.tweetRepository.save(newTweet);
   }
 
-  async deleteTweetById(tweetId: string): Promise<string> {
+  async deleteTweetById(tweetId: string): DeleteTweetResponse {
     const foundedTweet: Tweet | null = await this.tweetRepository.findOne({ where: { tweetId } });
 
     if (!foundedTweet) {
@@ -47,7 +48,7 @@ export class TweetsService {
 
     await this.tweetRepository.delete({ tweetId });
 
-    return `Tweet ${tweetId} was deleted successfully`;
+    return { message: `Tweet ${tweetId} was deleted successfully` };
   }
 
   async updateTweetById(tweetId: string, dto: UpdateTweetDto): Promise<Tweet> {
