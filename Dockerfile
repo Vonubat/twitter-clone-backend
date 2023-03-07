@@ -21,4 +21,4 @@ COPY --chown=node:node --from=build /app/dist ./dist
 
 USER node
 
-CMD [ "npm", "run", "start" ]
+CMD [ "npm", "run", "start:prod" ]
