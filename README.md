@@ -1,35 +1,34 @@
-## Installation
+# Deploy:
+
+https://twitter-clone-back-end.up.railway.app/docs
+
+## Local setup
+
+0. Install docker and docker-compose using the instruction https://docs.docker.com/get-docker/
+
+1. Install dependencies
 
 ```bash
 $ npm install
 ```
 
-## Running the Docker with PostgreSQL service
-
-**Install docker and docker-compose using the instruction https://docs.docker.com/get-docker/**
+2. Running the Docker with PostgreSQL service:
 
 ```bash
 # for start
-$ docker-compose up
+$ docker-compose up -d
 
 # for stop
 $ docker-compose down
 ```
 
-## Running the backend service
+3. Running the backend service
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
 $ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
 
-## Seed DB
+4. Seed DB (optional)
 
 ```bash
 $ npm run seed

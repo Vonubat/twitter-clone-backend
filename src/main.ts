@@ -5,10 +5,10 @@ import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
-  const PORT = process.env.PORT || 5000;
+  const PORT = process.env.PORT || 3000;
 
   const app = await NestFactory.create(AppModule, {
-    cors: { credentials: true, origin: true },
+    cors: { origin: ['http://localhost:5173', 'https://twitter-clone-symfa.netlify.app/'], credentials: true },
   });
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
