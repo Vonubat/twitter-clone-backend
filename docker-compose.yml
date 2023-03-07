@@ -1,28 +1,10 @@
 version: '3.9'
 
 services:
-  api:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      # Only will build development stage from our dockerfile
-      # target: development
-    env_file:
-      - .env
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    # Run a command against the development stage of the image
-    # command: npm run start:dev
-    command: npm run start:prod
-    ports:
-      - 3000:3000
-    depends_on:
-      - postgres
   postgres:
+    container_name: postgres_container
     image: postgres:latest
     environment:
-      PG_DATA: /var/lib/postgresql/data
       POSTGRES_DB: 'twitter-clone'
       POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'postgres'
@@ -30,9 +12,3 @@ services:
       PGTZ: 'GMT+3'
     ports:
       - '5432:5432'
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    restart: always
-
-volumes:
-  pgdata:
