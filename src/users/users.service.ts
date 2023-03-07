@@ -8,7 +8,23 @@ import { CreateUserDto } from './dto/create-user.dto';
 export class UsersService {
   constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
 
-  createUser(dto: CreateUserDto): Promise<User> {
+  async createUser(dto: CreateUserDto): Promise<User> {
+    const foundedUser: User | null = await this.userRepository.findOne({
+      where: {
+        username: dto.username,
+      },
+    });
+
+    if (foundedUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'User with such username is exist',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const newUser: User = this.userRepository.create(dto);
 
     return this.userRepository.save(newUser);
