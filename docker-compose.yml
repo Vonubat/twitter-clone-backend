@@ -15,8 +15,7 @@ services:
     # Run a command against the development stage of the image
     command: npm run start:dev
     ports:
-      - 5000:5000
-      - 9229:9229
+      - 3000:3000
     depends_on:
       - postgres
   postgres:
