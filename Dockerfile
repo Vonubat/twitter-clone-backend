@@ -2,13 +2,13 @@ FROM node:lts-alpine As build
 
 WORKDIR /app
 
-ENV NODE_ENV production
-
 COPY --chown=node:node package.json package-lock.json ./
 
 RUN npm ci
 
 COPY --chown=node:node . .
+
+ENV NODE_ENV production
 
 RUN npm run build
 
