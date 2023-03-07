@@ -8,8 +8,6 @@ RUN npm ci
 
 COPY --chown=node:node . .
 
-ENV NODE_ENV production
-
 RUN npm run build
 
 
@@ -23,4 +21,4 @@ COPY --chown=node:node --from=build /app/dist ./dist
 
 USER node
 
-CMD [ "node", "dist/main.js" ]
+CMD [ "node", "env NODE_ENV=production dist/main.js" ]
