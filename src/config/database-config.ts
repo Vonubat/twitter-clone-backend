@@ -7,29 +7,15 @@ import { ConfigModule } from '@nestjs/config';
 
 ConfigModule.forRoot();
 
-const dev = 'development';
-const prod = 'production';
+const { NODE_ENV, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
-const {
-  NODE_ENV = dev,
-  DB_HOST,
-  PGHOST,
-  DB_PORT,
-  PGPORT,
-  DB_USER,
-  PGUSER,
-  DB_PASSWORD,
-  PGPASSWORD,
-  DB_NAME,
-  PGDATABASE,
-} = process.env;
-
-const host = NODE_ENV === dev ? DB_HOST : PGHOST;
-const port = Number(NODE_ENV === dev ? DB_PORT : PGPORT);
-const username = NODE_ENV === dev ? DB_USER : PGUSER;
-const password = NODE_ENV === dev ? DB_PASSWORD : PGPASSWORD;
-const database = NODE_ENV === dev ? DB_NAME : PGDATABASE;
-const url = NODE_ENV === prod ? `postgresql://${PGUSER}:${PGPASSWORD}@${PGHOST}:${PGPORT}/${PGDATABASE}` : undefined;
+const host = DB_HOST;
+const port = Number(DB_PORT);
+const username = DB_USER;
+const password = DB_PASSWORD;
+const database = DB_NAME;
+const url =
+  NODE_ENV === 'production' ? `postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}` : undefined;
 
 console.log(NODE_ENV);
 console.log(host);
