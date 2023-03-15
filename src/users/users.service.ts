@@ -6,6 +6,7 @@ import { TweetsService } from '../tweets/tweets.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateAvatarDto } from './dto/update-avatar.dto';
 import { UpdateBgImageDto } from './dto/update-bgImage.dto';
+import { FollowingDto } from './dto/following-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -128,6 +129,88 @@ export class UsersService {
     }
 
     foundedUser.bgImage = dto.bgImage;
+
+    return this.userRepository.save(foundedUser);
+  }
+
+  async followingProcess(dto: FollowingDto, user: User) {
+    const foundedUser: User | null = await this.userRepository.findOne({
+      where: {
+        userId: user.userId,
+      },
+      relations: {
+        followings: true,
+      },
+    });
+
+    if (!foundedUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const followingUser: User | null = await this.userRepository.findOne({
+      where: {
+        userId: dto.targetUserId,
+      },
+    });
+
+    if (!followingUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    foundedUser.followings.push(followingUser);
+
+    return this.userRepository.save(foundedUser);
+  }
+
+  async unFollowingProcess(dto: FollowingDto, user: User) {
+    const foundedUser: User | null = await this.userRepository.findOne({
+      where: {
+        userId: user.userId,
+      },
+      relations: {
+        followings: true,
+      },
+    });
+
+    if (!foundedUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const unFollowingUser: User | null = await this.userRepository.findOne({
+      where: {
+        userId: dto.targetUserId,
+      },
+    });
+
+    if (!unFollowingUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    foundedUser.followings = foundedUser.followings.filter((user) => user.userId !== unFollowingUser.userId);
 
     return this.userRepository.save(foundedUser);
   }

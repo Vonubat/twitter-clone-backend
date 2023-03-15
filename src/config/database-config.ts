@@ -2,8 +2,11 @@ import { DataSourceOptions } from 'typeorm';
 import { Tweet } from '../db/entities/tweet.entity';
 import { User } from '../db/entities/user.entity';
 import { Like } from '../db/entities/like.entity';
-import { Migartion1677766976253 } from '../migrations/1677766976253-Migartion';
 import { ConfigModule } from '@nestjs/config';
+import { Migartion1677766976253 } from '../migrations/1677766976253-Migartion';
+import { Migartion1678887807670 } from '../migrations/1678887807670-Migartion';
+import { Migration1678888075315 } from '../migrations/1678888075315-Migration';
+import { Migration1678888528783 } from '../migrations/1678888528783-Migration';
 
 ConfigModule.forRoot();
 
@@ -34,7 +37,7 @@ export const databaseConfig: DataSourceOptions = {
   database,
   url,
   entities: [User, Tweet, Like],
-  migrations: [Migartion1677766976253],
+  migrations: [Migartion1677766976253, Migartion1678887807670, Migration1678888075315, Migration1678888528783],
   synchronize: false,
   logging: true,
   migrationsRun: true,

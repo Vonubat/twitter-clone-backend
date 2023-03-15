@@ -36,3 +36,5 @@ lerna-debug.log*
 
 # dotenv environment variable files
 .env
+
+request.http
