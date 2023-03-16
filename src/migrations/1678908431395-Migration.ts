@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Migartion1677766976253 implements MigrationInterface {
-  name = 'Migartion1677766976253';
+export class Migration1678908431395 implements MigrationInterface {
+  name = 'Migration1678908431395';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -14,6 +14,11 @@ export class Migartion1677766976253 implements MigrationInterface {
       `CREATE TABLE "tweet" ("tweetId" uuid NOT NULL DEFAULT uuid_generate_v4(), "text" character varying NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "userUserId" uuid, CONSTRAINT "PK_e7fb403cff8a6a4613e1fbcdb66" PRIMARY KEY ("tweetId"))`,
     );
     await queryRunner.query(
+      `CREATE TABLE "followers" ("userId" uuid NOT NULL, "followerId" uuid NOT NULL, CONSTRAINT "PK_ec7c44288deba8d4f1a945acfe5" PRIMARY KEY ("userId", "followerId"))`,
+    );
+    await queryRunner.query(`CREATE INDEX "IDX_d052aca09cecd2e9b8b94e3c67" ON "followers" ("userId") `);
+    await queryRunner.query(`CREATE INDEX "IDX_451bb9eb792c3023a164cf14e0" ON "followers" ("followerId") `);
+    await queryRunner.query(
       `ALTER TABLE "like" ADD CONSTRAINT "FK_f61dc588a5212f27ef7625d96bb" FOREIGN KEY ("tweetTweetId") REFERENCES "tweet"("tweetId") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
@@ -22,12 +27,23 @@ export class Migartion1677766976253 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "tweet" ADD CONSTRAINT "FK_cf969c68c059892ffb0d883d73d" FOREIGN KEY ("userUserId") REFERENCES "user"("userId") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
+    await queryRunner.query(
+      `ALTER TABLE "followers" ADD CONSTRAINT "FK_d052aca09cecd2e9b8b94e3c671" FOREIGN KEY ("userId") REFERENCES "user"("userId") ON DELETE CASCADE ON UPDATE CASCADE`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "followers" ADD CONSTRAINT "FK_451bb9eb792c3023a164cf14e0a" FOREIGN KEY ("followerId") REFERENCES "user"("userId") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`ALTER TABLE "followers" DROP CONSTRAINT "FK_451bb9eb792c3023a164cf14e0a"`);
+    await queryRunner.query(`ALTER TABLE "followers" DROP CONSTRAINT "FK_d052aca09cecd2e9b8b94e3c671"`);
     await queryRunner.query(`ALTER TABLE "tweet" DROP CONSTRAINT "FK_cf969c68c059892ffb0d883d73d"`);
     await queryRunner.query(`ALTER TABLE "like" DROP CONSTRAINT "FK_9c8d745f61e58ab9be5f5bf44f4"`);
     await queryRunner.query(`ALTER TABLE "like" DROP CONSTRAINT "FK_f61dc588a5212f27ef7625d96bb"`);
+    await queryRunner.query(`DROP INDEX "public"."IDX_451bb9eb792c3023a164cf14e0"`);
+    await queryRunner.query(`DROP INDEX "public"."IDX_d052aca09cecd2e9b8b94e3c67"`);
+    await queryRunner.query(`DROP TABLE "followers"`);
     await queryRunner.query(`DROP TABLE "tweet"`);
     await queryRunner.query(`DROP TABLE "like"`);
     await queryRunner.query(`DROP TABLE "user"`);

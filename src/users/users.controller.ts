@@ -80,4 +80,20 @@ export class UsersController {
     const { user } = request;
     return this.usersService.unFollowingProcess(dto, user);
   }
+
+  @ApiOperation({ summary: 'get followers list' })
+  @ApiResponse({ status: 201, description: 'Return followers list', type: [User] })
+  @Get('follow/followers')
+  getFollowers(@Req() request: RequestWithUser): Promise<User[]> {
+    const { user } = request;
+    return this.usersService.getFollowers(user);
+  }
+
+  @ApiOperation({ summary: 'get followings list' })
+  @ApiResponse({ status: 201, description: 'Return followings list', type: [User] })
+  @Get('follow/followings')
+  getFollowings(@Req() request: RequestWithUser): Promise<User[]> {
+    const { user } = request;
+    return this.usersService.getFollowings(user);
+  }
 }

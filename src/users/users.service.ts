@@ -214,4 +214,50 @@ export class UsersService {
 
     return this.userRepository.save(foundedUser);
   }
+
+  async getFollowers(user: User): Promise<User[]> {
+    const foundedUser: User | null = await this.userRepository.findOne({
+      where: {
+        userId: user.userId,
+      },
+      relations: {
+        followers: true,
+      },
+    });
+
+    if (!foundedUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return user.followers;
+  }
+
+  async getFollowings(user: User): Promise<User[]> {
+    const foundedUser: User | null = await this.userRepository.findOne({
+      where: {
+        userId: user.userId,
+      },
+      relations: {
+        followings: true,
+      },
+    });
+
+    if (!foundedUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return user.followings;
+  }
 }
