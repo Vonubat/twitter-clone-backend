@@ -170,8 +170,30 @@ export class UsersService {
     }
 
     currentUser.followings.push(followingUser);
+    await this.userRepository.save(currentUser);
 
-    return this.userRepository.save(currentUser);
+    return this.userRepository
+      .findOne({
+        where: {
+          userId: user.userId,
+        },
+        relations: {
+          followings: true,
+        },
+      })
+      .then((currentUser) => {
+        if (!currentUser) {
+          throw new HttpException(
+            {
+              status: HttpStatus.NOT_FOUND,
+              error: 'User with this id does not exist',
+            },
+            HttpStatus.NOT_FOUND,
+          );
+        }
+
+        return currentUser.followings;
+      });
   }
 
   async unFollowUser(dto: FollowingDto, user: User) {
@@ -212,7 +234,30 @@ export class UsersService {
 
     currentUser.followings = currentUser.followings.filter((user) => user.userId !== unFollowingUser.userId);
 
-    return this.userRepository.save(currentUser);
+    await this.userRepository.save(currentUser);
+
+    return this.userRepository
+      .findOne({
+        where: {
+          userId: user.userId,
+        },
+        relations: {
+          followings: true,
+        },
+      })
+      .then((currentUser) => {
+        if (!currentUser) {
+          throw new HttpException(
+            {
+              status: HttpStatus.NOT_FOUND,
+              error: 'User with this id does not exist',
+            },
+            HttpStatus.NOT_FOUND,
+          );
+        }
+
+        return currentUser.followings;
+      });
   }
 
   async getFollowers(user: User): Promise<User[]> {
