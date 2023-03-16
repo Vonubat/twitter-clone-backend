@@ -133,8 +133,8 @@ export class UsersService {
     return this.userRepository.save(foundedUser);
   }
 
-  async followingProcess(dto: FollowingDto, user: User) {
-    const foundedUser: User | null = await this.userRepository.findOne({
+  async followUser(dto: FollowingDto, user: User) {
+    const currentUser: User | null = await this.userRepository.findOne({
       where: {
         userId: user.userId,
       },
@@ -143,7 +143,7 @@ export class UsersService {
       },
     });
 
-    if (!foundedUser) {
+    if (!currentUser) {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
@@ -169,13 +169,13 @@ export class UsersService {
       );
     }
 
-    foundedUser.followings.push(followingUser);
+    currentUser.followings.push(followingUser);
 
-    return this.userRepository.save(foundedUser);
+    return this.userRepository.save(currentUser);
   }
 
-  async unFollowingProcess(dto: FollowingDto, user: User) {
-    const foundedUser: User | null = await this.userRepository.findOne({
+  async unFollowUser(dto: FollowingDto, user: User) {
+    const currentUser: User | null = await this.userRepository.findOne({
       where: {
         userId: user.userId,
       },
@@ -184,7 +184,7 @@ export class UsersService {
       },
     });
 
-    if (!foundedUser) {
+    if (!currentUser) {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
@@ -210,13 +210,13 @@ export class UsersService {
       );
     }
 
-    foundedUser.followings = foundedUser.followings.filter((user) => user.userId !== unFollowingUser.userId);
+    currentUser.followings = currentUser.followings.filter((user) => user.userId !== unFollowingUser.userId);
 
-    return this.userRepository.save(foundedUser);
+    return this.userRepository.save(currentUser);
   }
 
   async getFollowers(user: User): Promise<User[]> {
-    const foundedUser: User | null = await this.userRepository.findOne({
+    const currentUser: User | null = await this.userRepository.findOne({
       where: {
         userId: user.userId,
       },
@@ -225,7 +225,7 @@ export class UsersService {
       },
     });
 
-    if (!foundedUser) {
+    if (!currentUser) {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
@@ -235,11 +235,11 @@ export class UsersService {
       );
     }
 
-    return user.followers;
+    return currentUser.followers;
   }
 
   async getFollowings(user: User): Promise<User[]> {
-    const foundedUser: User | null = await this.userRepository.findOne({
+    const currentUser: User | null = await this.userRepository.findOne({
       where: {
         userId: user.userId,
       },
@@ -248,7 +248,7 @@ export class UsersService {
       },
     });
 
-    if (!foundedUser) {
+    if (!currentUser) {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
@@ -258,6 +258,6 @@ export class UsersService {
       );
     }
 
-    return user.followings;
+    return currentUser.followings;
   }
 }

@@ -68,7 +68,7 @@ export class UsersController {
   @Post('/follow')
   follow(@Body() dto: FollowingDto, @Req() request: RequestWithUser): Promise<User> {
     const { user } = request;
-    return this.usersService.followingProcess(dto, user);
+    return this.usersService.followUser(dto, user);
   }
 
   @ApiSecurity('Authentication')
@@ -78,9 +78,11 @@ export class UsersController {
   @Post('/unfollow')
   unfollow(@Body() dto: UnFollowingDto, @Req() request: RequestWithUser): Promise<User> {
     const { user } = request;
-    return this.usersService.unFollowingProcess(dto, user);
+    return this.usersService.unFollowUser(dto, user);
   }
 
+  @ApiSecurity('Authentication')
+  @UseGuards(JwtAuthenticationGuard)
   @ApiOperation({ summary: 'get followers list' })
   @ApiResponse({ status: 201, description: 'Return followers list', type: [User] })
   @Get('follow/followers')
@@ -89,6 +91,8 @@ export class UsersController {
     return this.usersService.getFollowers(user);
   }
 
+  @ApiSecurity('Authentication')
+  @UseGuards(JwtAuthenticationGuard)
   @ApiOperation({ summary: 'get followings list' })
   @ApiResponse({ status: 201, description: 'Return followings list', type: [User] })
   @Get('follow/followings')
