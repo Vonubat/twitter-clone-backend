@@ -1,6 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity, CreateDateColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  JoinTable,
+} from 'typeorm';
 import { Like } from './like.entity';
 import { Tweet } from './tweet.entity';
 
@@ -59,4 +68,19 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Like, (like: Like): User => like.user)
   likes?: Like[];
+
+  @ManyToMany(() => User, (user: User): User[] => user.followings, { cascade: true })
+  @JoinTable({
+    name: 'followers',
+    joinColumn: {
+      name: 'userId',
+    },
+    inverseJoinColumn: {
+      name: 'followerId',
+    },
+  })
+  followers: User[];
+
+  @ManyToMany(() => User, (user: User): User[] => user.followers)
+  followings: User[];
 }

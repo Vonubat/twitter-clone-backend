@@ -8,7 +8,7 @@ async function bootstrap() {
   const PORT = process.env.PORT || 3000;
 
   const app = await NestFactory.create(AppModule, {
-    cors: { origin: ['http://localhost:5173', 'https://twitter-clone-symfa.netlify.app/'], credentials: true },
+    cors: { origin: true, credentials: true },
   });
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());

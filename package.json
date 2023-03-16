@@ -37,7 +37,7 @@
     "seed": "ts-node src/config/seed-config.ts",
     "typeorm": "ts-node ./node_modules/typeorm/cli -d src/config/data-source.ts",
     "migration:run": "npm run typeorm migration:run",
-    "migration:generate": "npm run typeorm migration:generate src/migrations/Migartion",
+    "migration:generate": "npm run typeorm migration:generate src/migrations/Migration",
     "migration:create": "npm run typeorm migration:create",
     "migration:revert": "npm run typeorm migration:revert"
   },

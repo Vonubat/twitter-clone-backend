@@ -8,6 +8,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateAvatarDto } from './dto/update-avatar.dto';
 import { UpdateBgImageDto } from './dto/update-bgImage.dto';
 import { UsersService } from './users.service';
+import { FollowingDto } from './dto/following-user.dto';
+import { UnFollowingDto } from './dto/unfollowing-user.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -57,5 +59,45 @@ export class UsersController {
   updateBgImage(@Body() dto: UpdateBgImageDto, @Req() request: RequestWithUser): Promise<User> {
     const { user } = request;
     return this.usersService.updateUserBgImage(dto, user);
+  }
+
+  @ApiSecurity('Authentication')
+  @UseGuards(JwtAuthenticationGuard)
+  @ApiOperation({ summary: 'Follow user' })
+  @ApiResponse({ status: 201, description: 'Return follow User', type: User })
+  @Post('/follow')
+  follow(@Body() dto: FollowingDto, @Req() request: RequestWithUser): Promise<User> {
+    const { user } = request;
+    return this.usersService.followUser(dto, user);
+  }
+
+  @ApiSecurity('Authentication')
+  @UseGuards(JwtAuthenticationGuard)
+  @ApiOperation({ summary: 'Unfollow user' })
+  @ApiResponse({ status: 201, description: 'Return User Owner', type: User })
+  @Post('/unfollow')
+  unfollow(@Body() dto: UnFollowingDto, @Req() request: RequestWithUser): Promise<User> {
+    const { user } = request;
+    return this.usersService.unFollowUser(dto, user);
+  }
+
+  @ApiSecurity('Authentication')
+  @UseGuards(JwtAuthenticationGuard)
+  @ApiOperation({ summary: 'get followers list' })
+  @ApiResponse({ status: 201, description: 'Return followers list', type: [User] })
+  @Get('follow/followers')
+  getFollowers(@Req() request: RequestWithUser): Promise<User[]> {
+    const { user } = request;
+    return this.usersService.getFollowers(user);
+  }
+
+  @ApiSecurity('Authentication')
+  @UseGuards(JwtAuthenticationGuard)
+  @ApiOperation({ summary: 'get followings list' })
+  @ApiResponse({ status: 201, description: 'Return followings list', type: [User] })
+  @Get('follow/followings')
+  getFollowings(@Req() request: RequestWithUser): Promise<User[]> {
+    const { user } = request;
+    return this.usersService.getFollowings(user);
   }
 }
