@@ -58,7 +58,7 @@ export class TweetsService {
       );
     }
 
-    if (foundedTweet.likes) {
+    if (foundedTweet.likes?.length) {
       await this.likeRepository.delete(foundedTweet.likes.map(({ likeId }) => likeId));
     }
 
