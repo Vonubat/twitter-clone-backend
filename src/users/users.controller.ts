@@ -10,6 +10,8 @@ import { UpdateBgImageDto } from './dto/update-bgImage.dto';
 import { UsersService } from './users.service';
 import { FollowingDto } from './dto/following-user.dto';
 import { UnFollowingDto } from './dto/unfollowing-user.dto';
+import { BanUserDto } from './dto/ban-user.dto';
+import { UnBanUserDto } from './dto/unban-user.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -99,5 +101,36 @@ export class UsersController {
   getFollowings(@Req() request: RequestWithUser): Promise<User[]> {
     const { user } = request;
     return this.usersService.getFollowings(user);
+  }
+
+  // ban/unban
+  @ApiSecurity('Authentication')
+  @UseGuards(JwtAuthenticationGuard)
+  @ApiOperation({ summary: 'Ban user' })
+  @ApiResponse({ status: 201, description: 'Return list whom logged user banned', type: [User] })
+  @Post('/ban')
+  ban(@Body() dto: BanUserDto, @Req() request: RequestWithUser): Promise<User[]> {
+    const { user } = request;
+    return this.usersService.banUser(dto, user);
+  }
+
+  @ApiSecurity('Authentication')
+  @UseGuards(JwtAuthenticationGuard)
+  @ApiOperation({ summary: 'Unfollow user' })
+  @ApiResponse({ status: 201, description: 'Return User Owner', type: [User] })
+  @Post('/unban')
+  unBan(@Body() dto: UnBanUserDto, @Req() request: RequestWithUser): Promise<User[]> {
+    const { user } = request;
+    return this.usersService.unbanUser(dto, user);
+  }
+
+  @ApiSecurity('Authentication')
+  @UseGuards(JwtAuthenticationGuard)
+  @ApiOperation({ summary: 'get banned users list' })
+  @ApiResponse({ status: 201, description: 'Return banned users list', type: [User] })
+  @Get('ban/banned')
+  getBanUsers(@Req() request: RequestWithUser): Promise<User[]> {
+    const { user } = request;
+    return this.usersService.getBanUsers(user);
   }
 }

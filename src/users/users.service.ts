@@ -7,6 +7,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateAvatarDto } from './dto/update-avatar.dto';
 import { UpdateBgImageDto } from './dto/update-bgImage.dto';
 import { FollowingDto } from './dto/following-user.dto';
+import { BanUserDto } from './dto/ban-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -304,5 +305,114 @@ export class UsersService {
     }
 
     return currentUser.followings;
+  }
+
+  //----------ban/unban----------
+
+  async banUser(dto: BanUserDto, user: User) {
+    const currentUser: User | null = await this.userRepository.findOne({
+      where: {
+        userId: user.userId,
+      },
+      relations: {
+        banned: true,
+      },
+    });
+
+    if (!currentUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const banUser: User | null = await this.userRepository.findOne({
+      where: {
+        userId: dto.targetUserId,
+      },
+    });
+
+    if (!banUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    currentUser.banned.push(banUser);
+    await this.userRepository.save(currentUser);
+
+    return currentUser.banned;
+  }
+
+  async unbanUser(dto: BanUserDto, user: User) {
+    const currentUser: User | null = await this.userRepository.findOne({
+      where: {
+        userId: user.userId,
+      },
+      relations: {
+        banned: true,
+      },
+    });
+
+    if (!currentUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const unbanUser: User | null = await this.userRepository.findOne({
+      where: {
+        userId: dto.targetUserId,
+      },
+    });
+
+    if (!unbanUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    currentUser.banned = currentUser.banned.filter((user) => user.userId !== unbanUser.userId);
+    await this.userRepository.save(currentUser);
+
+    return currentUser.banned;
+  }
+
+  async getBanUsers(user: User): Promise<User[]> {
+    const currentUser: User | null = await this.userRepository.findOne({
+      where: {
+        userId: user.userId,
+      },
+      relations: {
+        banned: true,
+      },
+    });
+
+    if (!currentUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return currentUser.banned;
   }
 }

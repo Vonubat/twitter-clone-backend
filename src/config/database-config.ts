@@ -3,7 +3,7 @@ import { Tweet } from '../db/entities/tweet.entity';
 import { User } from '../db/entities/user.entity';
 import { Like } from '../db/entities/like.entity';
 import { ConfigModule } from '@nestjs/config';
-import { Migration1678908431395 } from '../migrations/1678908431395-Migration';
+import { Migration1679481473661 } from '../migrations/1679481473661-Migration';
 
 ConfigModule.forRoot();
 
@@ -34,7 +34,7 @@ export const databaseConfig: DataSourceOptions = {
   database,
   url,
   entities: [User, Tweet, Like],
-  migrations: [Migration1678908431395],
+  migrations: [Migration1679481473661],
   synchronize: false,
   logging: true,
   migrationsRun: true,
