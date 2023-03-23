@@ -10,6 +10,7 @@ import { UpdateBgImageDto } from './dto/update-bgImage.dto';
 import { UsersService } from './users.service';
 import { FollowingDto } from './dto/following-user.dto';
 import { UnFollowingDto } from './dto/unfollowing-user.dto';
+import { Tweet } from '../db/entities/tweet.entity';
 
 @ApiTags('Users')
 @Controller('users')
@@ -99,5 +100,15 @@ export class UsersController {
   getFollowings(@Req() request: RequestWithUser): Promise<User[]> {
     const { user } = request;
     return this.usersService.getFollowings(user);
+  }
+
+  @ApiSecurity('Authentication')
+  @UseGuards(JwtAuthenticationGuard)
+  @ApiOperation({ summary: 'get followings feed list' })
+  @ApiResponse({ status: 201, description: 'Return followings feed list', type: [Tweet] })
+  @Get('feed/tweets')
+  getFeed(@Req() request: RequestWithUser): Promise<Tweet[]> {
+    const { user } = request;
+    return this.usersService.getFollowingsFeed(user);
   }
 }
