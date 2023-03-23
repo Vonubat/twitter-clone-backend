@@ -58,7 +58,7 @@ export class TweetsService {
       );
     }
 
-    if (foundedTweet.likes) {
+    if (foundedTweet.likes?.length) {
       await this.likeRepository.delete(foundedTweet.likes.map(({ likeId }) => likeId));
     }
 
@@ -99,7 +99,10 @@ export class TweetsService {
   }
 
   async getTweetListById(userId: string): Promise<Tweet[]> {
-    const foundedUser: User | null = await this.userRepository.findOne({ where: { userId } });
+    const foundedUser: User | null = await this.userRepository.findOne({
+      where: { userId },
+      relations: { likes: true },
+    });
 
     if (!foundedUser) {
       throw new HttpException(

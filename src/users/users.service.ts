@@ -7,6 +7,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateAvatarDto } from './dto/update-avatar.dto';
 import { UpdateBgImageDto } from './dto/update-bgImage.dto';
 import { FollowingDto } from './dto/following-user.dto';
+import { Tweet } from '../db/entities/tweet.entity';
 
 @Injectable()
 export class UsersService {
@@ -51,7 +52,6 @@ export class UsersService {
         username,
       },
     });
-
     if (!foundedUser) {
       throw new HttpException(
         {
@@ -197,7 +197,7 @@ export class UsersService {
   }
 
   async unFollowUser(dto: FollowingDto, user: User) {
-    const currentUser: User | null = await this.userRepository.findOne({
+    const owner: User | null = await this.userRepository.findOne({
       where: {
         userId: user.userId,
       },
@@ -206,7 +206,7 @@ export class UsersService {
       },
     });
 
-    if (!currentUser) {
+    if (!owner) {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
@@ -232,9 +232,9 @@ export class UsersService {
       );
     }
 
-    currentUser.followings = currentUser.followings.filter((user) => user.userId !== unFollowingUser.userId);
+    owner.followings = owner.followings.filter((user) => user.userId !== unFollowingUser.userId);
 
-    await this.userRepository.save(currentUser);
+    await this.userRepository.save(owner);
 
     return this.userRepository
       .findOne({
@@ -261,7 +261,7 @@ export class UsersService {
   }
 
   async getFollowers(user: User): Promise<User[]> {
-    const currentUser: User | null = await this.userRepository.findOne({
+    const owner: User | null = await this.userRepository.findOne({
       where: {
         userId: user.userId,
       },
@@ -270,7 +270,7 @@ export class UsersService {
       },
     });
 
-    if (!currentUser) {
+    if (!owner) {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
@@ -280,11 +280,11 @@ export class UsersService {
       );
     }
 
-    return currentUser.followers;
+    return owner.followers;
   }
 
   async getFollowings(user: User): Promise<User[]> {
-    const currentUser: User | null = await this.userRepository.findOne({
+    const owner: User | null = await this.userRepository.findOne({
       where: {
         userId: user.userId,
       },
@@ -293,7 +293,7 @@ export class UsersService {
       },
     });
 
-    if (!currentUser) {
+    if (!owner) {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
@@ -303,6 +303,34 @@ export class UsersService {
       );
     }
 
-    return currentUser.followings;
+    return owner.followings;
+  }
+
+  async getFollowingsFeed(user: User): Promise<Tweet[]> {
+    const owner: User | null = await this.userRepository.findOne({
+      where: {
+        userId: user.userId,
+      },
+      relations: ['followings', 'followings.tweets'],
+    });
+
+    if (!owner) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Please, logged in',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const tweets: Tweet[] = owner.followings
+      .map((person) => person.tweets ?? [])
+      .flat()
+      .sort((a, b) => {
+        if (!a || !b) return 0;
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      });
+
+    return tweets;
   }
 }
