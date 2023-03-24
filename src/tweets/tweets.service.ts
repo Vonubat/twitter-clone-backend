@@ -101,7 +101,6 @@ export class TweetsService {
   async getTweetListById(userId: string): Promise<Tweet[]> {
     const foundedUser: User | null = await this.userRepository.findOne({
       where: { userId },
-      relations: { likes: true },
     });
 
     if (!foundedUser) {
@@ -120,6 +119,7 @@ export class TweetsService {
           userId,
         },
       },
+      relations: { likes: true },
     });
 
     return foundedTweets;
