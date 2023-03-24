@@ -312,7 +312,9 @@ export class UsersService {
       },
       relations: {
         followings: {
-          tweets: true,
+          tweets: {
+            likes: { user: true },
+          },
         },
       },
     });
