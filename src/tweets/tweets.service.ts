@@ -119,7 +119,11 @@ export class TweetsService {
           userId,
         },
       },
-      relations: { likes: true },
+      relations: {
+        likes: {
+          user: true,
+        },
+      },
     });
 
     return foundedTweets;
