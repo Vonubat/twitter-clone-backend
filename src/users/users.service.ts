@@ -7,7 +7,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateAvatarDto } from './dto/update-avatar.dto';
 import { UpdateBgImageDto } from './dto/update-bgImage.dto';
 import { FollowingDto } from './dto/following-user.dto';
-import { Tweet } from '../db/entities/tweet.entity';
 
 @Injectable()
 export class UsersService {
@@ -306,12 +305,16 @@ export class UsersService {
     return owner.followings;
   }
 
-  async getFollowingsFeed(user: User): Promise<Tweet[]> {
+  async getFollowingsFeed(user: User): Promise<User[]> {
     const owner: User | null = await this.userRepository.findOne({
       where: {
         userId: user.userId,
       },
-      relations: ['followings', 'followings.tweets'],
+      relations: {
+        followings: {
+          tweets: true,
+        },
+      },
     });
 
     if (!owner) {
@@ -323,14 +326,18 @@ export class UsersService {
         HttpStatus.NOT_FOUND,
       );
     }
-    const tweets: Tweet[] = owner.followings
-      .map((person) => person.tweets ?? [])
-      .flat()
-      .sort((a, b) => {
+
+    owner.followings.map((followingUser) => {
+      const user = { ...followingUser };
+
+      user.tweets = user.tweets?.sort((a, b) => {
         if (!a || !b) return 0;
         return new Date(b.date).getTime() - new Date(a.date).getTime();
       });
 
-    return tweets;
+      return user;
+    });
+
+    return owner.followings;
   }
 }
