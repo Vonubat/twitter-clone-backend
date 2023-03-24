@@ -83,4 +83,19 @@ export class User extends BaseEntity {
 
   @ManyToMany(() => User, (user: User): User[] => user.followers)
   followings: User[];
+
+  @ManyToMany(() => User, (user: User): User[] => user.users, { cascade: true })
+  @JoinTable({
+    name: 'bannedUsers',
+    joinColumn: {
+      name: 'userId',
+    },
+    inverseJoinColumn: {
+      name: 'bannedId',
+    },
+  })
+  banned: User[];
+
+  @ManyToMany(() => User, (user: User): User[] => user.banned)
+  users: User[];
 }
