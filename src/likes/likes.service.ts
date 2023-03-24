@@ -42,6 +42,7 @@ export class LikesService {
 
     return this.likeRepository.find({
       where: { tweet: { tweetId: dto.tweetId } },
+      relations: { user: true },
     });
   }
 
