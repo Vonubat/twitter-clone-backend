@@ -6,9 +6,8 @@ import { TweetsService } from '../tweets/tweets.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateAvatarDto } from './dto/update-avatar.dto';
 import { UpdateBgImageDto } from './dto/update-bgImage.dto';
-import { FollowingDto } from './dto/following-user.dto';
-import { UnBanUserDto } from './dto/unban-user.dto';
-import { BanUserDto } from './dto/ban-user.dto';
+import { BanUnbanUserDto } from './dto/ban-unaban-user.dto';
+import { FollowingUnFollowingDto } from './dto/following-unfollowing-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -138,7 +137,7 @@ export class UsersService {
     return this.userRepository.save(foundedUser);
   }
 
-  async followUser(dto: FollowingDto, user: User) {
+  async followUser(dto: FollowingUnFollowingDto, user: User) {
     const currentUser: User | null = await this.userRepository.findOne({
       where: {
         userId: user.userId,
@@ -201,7 +200,7 @@ export class UsersService {
       });
   }
 
-  async unFollowUser(dto: FollowingDto, user: User) {
+  async unFollowUser(dto: FollowingUnFollowingDto, user: User) {
     const owner: User | null = await this.userRepository.findOne({
       where: {
         userId: user.userId,
@@ -349,7 +348,7 @@ export class UsersService {
     return owner.followings;
   }
 
-  async banUser(dto: BanUserDto, user: User) {
+  async banUser(dto: BanUnbanUserDto, user: User) {
     const currentUser: User | null = await this.userRepository.findOne({
       where: {
         userId: user.userId,
@@ -396,7 +395,7 @@ export class UsersService {
     return currentUser.banned;
   }
 
-  async unbanUser(dto: UnBanUserDto, user: User) {
+  async unbanUser(dto: BanUnbanUserDto, user: User) {
     const currentUser: User | null = await this.userRepository.findOne({
       where: {
         userId: user.userId,

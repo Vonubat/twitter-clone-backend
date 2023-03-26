@@ -8,10 +8,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateAvatarDto } from './dto/update-avatar.dto';
 import { UpdateBgImageDto } from './dto/update-bgImage.dto';
 import { UsersService } from './users.service';
-import { FollowingDto } from './dto/following-user.dto';
-import { UnFollowingDto } from './dto/unfollowing-user.dto';
-import { BanUserDto } from './dto/ban-user.dto';
-import { UnBanUserDto } from './dto/unban-user.dto';
+import { BanUnbanUserDto } from './dto/ban-unaban-user.dto';
+import { FollowingUnFollowingDto } from './dto/following-unfollowing-user.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -66,9 +64,9 @@ export class UsersController {
   @ApiSecurity('Authentication')
   @UseGuards(JwtAuthenticationGuard)
   @ApiOperation({ summary: 'Follow user' })
-  @ApiResponse({ status: 201, description: 'Return list whom logged user is following', type: [User] })
+  @ApiResponse({ status: 201, description: "Return User's followings", type: [User] })
   @Post('/follow')
-  follow(@Body() dto: FollowingDto, @Req() request: RequestWithUser): Promise<User[]> {
+  follow(@Body() dto: FollowingUnFollowingDto, @Req() request: RequestWithUser): Promise<User[]> {
     const { user } = request;
     return this.usersService.followUser(dto, user);
   }
@@ -76,16 +74,16 @@ export class UsersController {
   @ApiSecurity('Authentication')
   @UseGuards(JwtAuthenticationGuard)
   @ApiOperation({ summary: 'Unfollow user' })
-  @ApiResponse({ status: 201, description: 'Return User Owner', type: [User] })
+  @ApiResponse({ status: 201, description: "Return User's followings", type: [User] })
   @Post('/unfollow')
-  unfollow(@Body() dto: UnFollowingDto, @Req() request: RequestWithUser): Promise<User[]> {
+  unfollow(@Body() dto: FollowingUnFollowingDto, @Req() request: RequestWithUser): Promise<User[]> {
     const { user } = request;
     return this.usersService.unFollowUser(dto, user);
   }
 
   @ApiSecurity('Authentication')
   @UseGuards(JwtAuthenticationGuard)
-  @ApiOperation({ summary: 'get followers list' })
+  @ApiOperation({ summary: 'Get followers list' })
   @ApiResponse({ status: 201, description: 'Return followers list', type: [User] })
   @Get('follow/followers')
   getFollowers(@Req() request: RequestWithUser): Promise<User[]> {
@@ -95,7 +93,7 @@ export class UsersController {
 
   @ApiSecurity('Authentication')
   @UseGuards(JwtAuthenticationGuard)
-  @ApiOperation({ summary: 'get followings list' })
+  @ApiOperation({ summary: 'Get followings list' })
   @ApiResponse({ status: 201, description: 'Return followings list', type: [User] })
   @Get('follow/followings')
   getFollowings(@Req() request: RequestWithUser): Promise<User[]> {
@@ -116,9 +114,9 @@ export class UsersController {
   @ApiSecurity('Authentication')
   @UseGuards(JwtAuthenticationGuard)
   @ApiOperation({ summary: 'Ban user' })
-  @ApiResponse({ status: 201, description: 'Return list whom logged user banned', type: [User] })
+  @ApiResponse({ status: 201, description: 'Return banned users list', type: [User] })
   @Post('/ban')
-  ban(@Body() dto: BanUserDto, @Req() request: RequestWithUser): Promise<User[]> {
+  ban(@Body() dto: BanUnbanUserDto, @Req() request: RequestWithUser): Promise<User[]> {
     const { user } = request;
     return this.usersService.banUser(dto, user);
   }
@@ -126,16 +124,16 @@ export class UsersController {
   @ApiSecurity('Authentication')
   @UseGuards(JwtAuthenticationGuard)
   @ApiOperation({ summary: 'Unban user' })
-  @ApiResponse({ status: 201, description: 'Return User Owner', type: [User] })
+  @ApiResponse({ status: 201, description: 'Return banned users list', type: [User] })
   @Post('/unban')
-  unBan(@Body() dto: UnBanUserDto, @Req() request: RequestWithUser): Promise<User[]> {
+  unBan(@Body() dto: BanUnbanUserDto, @Req() request: RequestWithUser): Promise<User[]> {
     const { user } = request;
     return this.usersService.unbanUser(dto, user);
   }
 
   @ApiSecurity('Authentication')
   @UseGuards(JwtAuthenticationGuard)
-  @ApiOperation({ summary: 'get banned users list' })
+  @ApiOperation({ summary: 'Get banned users list' })
   @ApiResponse({ status: 201, description: 'Return banned users list', type: [User] })
   @Get('ban/banned')
   getBanUsers(@Req() request: RequestWithUser): Promise<User[]> {
