@@ -1,7 +1,3 @@
-# Deploy:
-
-https://twitter-clone-back-end.up.railway.app/docs
-
 ## Local setup
 
 0. Install docker and docker-compose using the instruction https://docs.docker.com/get-docker/
