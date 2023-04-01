@@ -6,7 +6,8 @@ import { TweetsService } from '../tweets/tweets.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateAvatarDto } from './dto/update-avatar.dto';
 import { UpdateBgImageDto } from './dto/update-bgImage.dto';
-import { FollowingDto } from './dto/following-user.dto';
+import { BanUnbanUserDto } from './dto/ban-unaban-user.dto';
+import { FollowingUnFollowingDto } from './dto/following-unfollowing-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -50,6 +51,9 @@ export class UsersService {
       where: {
         username,
       },
+      relations: {
+        banned: true,
+      },
     });
     if (!foundedUser) {
       throw new HttpException(
@@ -72,6 +76,7 @@ export class UsersService {
         likes: {
           tweet: true,
         },
+        banned: true,
       },
     });
 
@@ -132,7 +137,7 @@ export class UsersService {
     return this.userRepository.save(foundedUser);
   }
 
-  async followUser(dto: FollowingDto, user: User) {
+  async followUser(dto: FollowingUnFollowingDto, user: User) {
     const currentUser: User | null = await this.userRepository.findOne({
       where: {
         userId: user.userId,
@@ -195,7 +200,7 @@ export class UsersService {
       });
   }
 
-  async unFollowUser(dto: FollowingDto, user: User) {
+  async unFollowUser(dto: FollowingUnFollowingDto, user: User) {
     const owner: User | null = await this.userRepository.findOne({
       where: {
         userId: user.userId,
@@ -341,5 +346,116 @@ export class UsersService {
     });
 
     return owner.followings;
+  }
+
+  async banUser(dto: BanUnbanUserDto, user: User) {
+    const currentUser: User | null = await this.userRepository.findOne({
+      where: {
+        userId: user.userId,
+      },
+      relations: {
+        banned: true,
+        followings: true,
+        followers: true,
+      },
+    });
+
+    if (!currentUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const banUser: User | null = await this.userRepository.findOne({
+      where: {
+        userId: dto.targetUserId,
+      },
+    });
+
+    if (!banUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    currentUser.banned.push(banUser);
+    currentUser.followings = currentUser.followings.filter((user) => user.userId !== banUser.userId);
+    currentUser.followers = currentUser.followers.filter((user) => user.userId !== banUser.userId);
+
+    await this.userRepository.save(currentUser);
+
+    return currentUser.banned;
+  }
+
+  async unbanUser(dto: BanUnbanUserDto, user: User) {
+    const currentUser: User | null = await this.userRepository.findOne({
+      where: {
+        userId: user.userId,
+      },
+      relations: {
+        banned: true,
+      },
+    });
+
+    if (!currentUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const unbanUser: User | null = await this.userRepository.findOne({
+      where: {
+        userId: dto.targetUserId,
+      },
+    });
+
+    if (!unbanUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with this id does not exist',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    currentUser.banned = currentUser.banned.filter((user) => user.userId !== unbanUser.userId);
+    await this.userRepository.save(currentUser);
+
+    return currentUser.banned;
+  }
+
+  async getBanUsers(user: User): Promise<User[]> {
+    const owner: User | null = await this.userRepository.findOne({
+      where: {
+        userId: user.userId,
+      },
+      relations: {
+        banned: true,
+      },
+    });
+
+    if (!owner) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Please, logged in',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return owner.banned;
   }
 }
