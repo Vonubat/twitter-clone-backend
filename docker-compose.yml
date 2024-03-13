@@ -11,4 +11,4 @@ services:
       TZ: 'GMT+3'
       PGTZ: 'GMT+3'
     ports:
-      - '5432:5432'
+      - '5433:5432'
